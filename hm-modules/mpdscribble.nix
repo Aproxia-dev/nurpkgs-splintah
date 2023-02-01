@@ -63,8 +63,11 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ];
-    xdg.configFile."mpdscribble/mpdscribble.conf".text =
-      (toMpdscribbleIni cfg.config + "\n" + cfg.extraConfig);
+    xdg.configFile = mkIf (cfg.config != { }) || (cfg.extraConfig != "")
+    	{
+      	"mpdscribble/mpdscribble.conf".text =
+      	(toMpdscribbleIni cfg.config + "\n" + cfg.extraConfig);
+			}
 
     systemd.user.services.mpdscribble = {
       Unit = {
